@@ -1,6 +1,6 @@
 public class Division
 {
-    public double divide(double a, double b)
+    public static double divide(double a, double b)
     {
         if (b == 0)
         {
