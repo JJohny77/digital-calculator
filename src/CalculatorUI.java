@@ -13,7 +13,7 @@ public class CalculatorUI extends JFrame implements ActionListener {
     public CalculatorUI() {
         // Ρυθμίσεις παραθύρου
         setTitle("Digital Calculator");
-        setSize(300, 400);
+        setSize(330, 480);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         setLocationRelativeTo(null); // Κέντρο οθόνης
@@ -27,14 +27,15 @@ public class CalculatorUI extends JFrame implements ActionListener {
 
         // Κουμπιά
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(5, 4, 5, 5));
+        panel.setLayout(new GridLayout(6, 4, 5, 5));
 
         String[] buttons = {
                 "AC", "÷", "×", "-",
                 "7", "8", "9", "+",
                 "4", "5", "6", "=",
-                "1", "2", "3", "",
-                "0", ".", "", ""
+                "1", "2", "3", ".",
+                "0", "mod", "x!", "",
+                "cos", "sin", "", ""
         };
 
         for (String text : buttons) {
@@ -55,18 +56,23 @@ public class CalculatorUI extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String cmd = e.getActionCommand();
 
-        if (cmd.charAt(0) >= '0' && cmd.charAt(0) <= '9' || cmd.equals(".")) {
+        // Αν πατήθηκε αριθμός ή τελεία
+        if ((cmd.charAt(0) >= '0' && cmd.charAt(0) <= '9') || cmd.equals(".")) {
             if (isOperatorPressed) {
                 display.setText("");
                 isOperatorPressed = false;
             }
             display.setText(display.getText() + cmd);
         }
+
+        // Εκκαθάριση
         else if (cmd.equals("AC")) {
             display.setText("");
             num1 = num2 = 0;
             operator = ' ';
         }
+
+        // Ισότητα
         else if (cmd.equals("=")) {
             try {
                 num2 = Double.parseDouble(display.getText());
@@ -91,7 +97,47 @@ public class CalculatorUI extends JFrame implements ActionListener {
                 display.setText("Σφάλμα");
             }
         }
-        else { // είναι πράξη
+
+        // Μονό-παραμετρικές συναρτήσεις
+        else if (cmd.equals("cos")) {
+            try {
+                num1 = Double.parseDouble(display.getText());
+                display.setText(String.valueOf(CosSin.cosine(num1)));
+            } catch (Exception ex) {
+                display.setText("Σφάλμα");
+            }
+        }
+        else if (cmd.equals("sin")) {
+            try {
+                num1 = Double.parseDouble(display.getText());
+                display.setText(String.valueOf(CosSin.sine(num1)));
+            } catch (Exception ex) {
+                display.setText("Σφάλμα");
+            }
+        }
+        else if (cmd.equals("x!")) {
+            try {
+                int n = Integer.parseInt(display.getText());
+                display.setText(String.valueOf(Factorial.factorial(n)));
+            } catch (Exception ex) {
+                display.setText("Σφάλμα");
+            }
+        }
+
+        // Modulus
+        else if (cmd.equals("mod")) {
+            try {
+                num1 = Double.parseDouble(display.getText());
+                String second = JOptionPane.showInputDialog(this, "Δώσε δεύτερο αριθμό:");
+                num2 = Double.parseDouble(second);
+                display.setText(String.valueOf(Mod.mod(num1, num2)));
+            } catch (Exception ex) {
+                display.setText("Σφάλμα");
+            }
+        }
+
+        // Αν είναι πράξη (+, -, ×, ÷)
+        else {
             try {
                 num1 = Double.parseDouble(display.getText());
                 operator = cmd.charAt(0);
